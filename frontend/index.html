@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet" />
+    <title>Expense Tracker</title>
+  </head>
+  <body class="bg-[radial-gradient(circle_at_center,#627ddf,#323a68)] min-h-screen bg-fixed">
+    <h2 class="absolute top-10 right-10 opacity-90 brightness-125 font-bold text-slate-900 backdrop-blur-3xl border-2 border-white/20 text-lg md:text-3xl p-2 rounded-2xl">₹ EXPENSE TRACKER
+</h2>
+    <div
+      id="signup-success"
+      class="p-4 font-medium text-green-400 rounded-md absolute top-10 left-5"
+    ></div>
+    <div id="signup-fail" class="p-4 font-medium text-red-400"></div>
+    <h1 class="text-3xl text-gray-100 font-bold text-center underline m-5">Signup/login</h1>
+<!-- Signup Form -->
+    <form
+      id="signup-form"
+      onsubmit="handleSignupSubmit(event)"
+      class="bg-blue-200 flex flex-col w-fit p-10 m-auto gap-2 px-14 rounded-lg"
+    >
+      <label for="signup-name">Enter Name</label>
+      <input
+        type="text"
+        name="name"
+        id="signup-name"
+        class="border border-gray-700 rounded-md"
+         
+      />
+      <label for="signup-email">Enter email</label>
+      <input
+        type="text"
+        name="email"
+        id="signup-email"
+        class="border border-gray-700 rounded-md"
+         
+      />
+      <label for="signup-password">Enter password</label>
+      <input
+        type="password"
+        name="password"
+        id="signup-password"
+        autocomplete="current-password"
+        class="border border-gray-700 rounded-md"
+         
+      />
+      <button
+        type="submit"
+        class="mx-2 bg-blue-500 cursor-pointer  border border-b-blue-950 text-white p-1 rounded-sm"
+      >
+        Signup
+      </button>
+    </form>
+<!-- Login Form  -->
+    <form
+      id="login-form"
+      onsubmit="handleLoginSubmit(event)"
+      class="bg-blue-200 flex-col w-fit p-10 m-auto gap-2 px-14 rounded-lg hidden"
+    >
+      <label for="login-email">Enter email</label>
+      <input
+        type="text"
+        name="email"
+        id="login-email"
+        class="border border-gray-700 rounded-md"
+         
+      />
+      <label for="login-password">Enter password</label>
+      <input
+        type="password"
+        name="password"
+        id="login-password"
+        autocomplete="current-password"
+        class="border border-gray-700 rounded-md"
+         
+      />
+      <button
+        type="submit"
+        class="mx-2 bg-blue-500 border border-b-blue-950 text-white p-1 rounded-sm cursor-pointer"
+      >
+        Login
+      </button>
+      <button onclick="resetPassForm()" id="forgot-toggle" class="bg-gray-100/50 w-fit px-1 rounded-sm hover:bg-gray-300 cursor-pointer border border-red-900 scale-90">forgot password</button>
+    </form>
+<!-- Reset Password Form -->
+    <form class="hidden bg-blue-200 flex-col w-fit p-10 m-auto gap-2 px-14 rounded-lg" id="reset-form" onsubmit="handleResetPassword(event)">
+      <label for="reset-email">Enter registered email</label>
+      <input type="email" name="email" id="reset-email" class="border border-gray-700 rounded-md"  />
+      <button type="submit" class="mx-2 bg-blue-500 border border-b-blue-950 text-white p-1 rounded-sm cursor-pointer">submit</button>
+    </form>
+
+<div class="flex justify-center">
+  <button
+    id="login-btn"
+    type="button"
+    onclick="toggleForm(event)"
+    class="p-4 font-bold text-gray-100 underline text-xl cursor-pointer"
+  >
+    Login
+  </button>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

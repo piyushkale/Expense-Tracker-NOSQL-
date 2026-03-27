@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet" />
+    <title>Expenses</title>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+  </head>
+  <body class="dark:bg-slate-500">
+    <button
+      id="buy-premium-btn"
+      onclick="handleCashfree()"
+      class="fixed top-0 md:top-4 right-0 md:right-4 z-50 px-5 py-2.5 rounded-full scale-[60%] md:scale-100 bg-linear-to-r from-yellow-400 via-amber-500 to-yellow-600 text-black font-semibold shadow-lg shadow-yellow-500/40 hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-200"
+    ></button>
+
+    <button
+      onclick="toggleTheme()"
+      class="absolute left-35 top-5 bg-slate-900/80 p-1 rounded-md hover:brightness-125 hover:bg-slate-800 cursor-pointer dark:bg-slate-500"
+    >
+      🌙
+    </button>
+
+    <h2
+      id="premium-h2"
+      class="absolute top-0 md:top-4 right-0 md:right-4 z-50 rounded-full scale-[60%] md:scale-100 bg-linear-to-r from-indigo-500 via-indigo-600 to-indigo-700 text-white font-mono font-semibold shadow-lg shadow-indigo-500/40 hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-200"
+    ></h2>
+
+    <h2
+      id="username-tag"
+      class="absolute top-2 left-3 font-bold text-2xl bg-blue-900/70 text-gray-200 p-2 rounded-md"
+    ></h2>
+    <button
+      onclick="userLogout()"
+      class="absolute top-16 left-3 bg-red-500/80 cursor-pointer px-1 font-semibold text-gray-200 hover:bg-red-600/80 active:scale-90 transition-all duration-200 rounded-sm"
+    >
+      Logout 🔓
+    </button>
+    <h2
+      class="text-2xl font-mono text-center p-6 bg-blue-200 dark:bg-slate-800 dark:text-gray-300"
+    >
+      Manage Expenses 💰💸
+    </h2>
+
+    <!-- Premium features div -->
+    <div
+      class="absolute right-2 scale-90 -translate-y-4 hidden bg-indigo-400/70 px-2 py-1 rounded-md border-b-2 border-indigo-900"
+      id="premium-div"
+    >
+      <button
+        onclick="showLeaderboard()"
+        class="text-lg font-sans bg-gray-200 border border-black scale-90 cursor-pointer hover:bg-yellow-400/50 px-2 rounded-md"
+        id="leaderboard-btn"
+      >
+        Show leaderboard
+      </button>
+      <button
+        onclick="displayMonthlyReport()"
+        class="text-lg font-sans bg-gray-200 border border-black scale-90 cursor-pointer hover:bg-yellow-400/50 px-2 rounded-md"
+      >
+        Monthly report
+      </button>
+      <button
+        onclick="displayYearlyReport()"
+        class="text-lg font-sans bg-gray-200 border border-black scale-90 cursor-pointer hover:bg-yellow-400/50 px-2 rounded-md"
+      >
+        Yearly report
+      </button>
+    </div>
+
+    <!-- Add expense form - Expense history and leaderboard section  -->
+
+    <div id="home-div">
+      <!--  Add expense form -->
+      <form
+        onsubmit="handleExpenseSubmit(event)"
+        class="flex justify-center flex-wrap gap-4 bg-blue-100 py-8 pt-10 text-md dark:bg-slate-600 dark:text-gray-300"
+      >
+        <label for="l-amount">Expense amount</label>
+        <input
+          class="bg-gray-200 dark:bg-gray-300 dark:text-gray-900 border border-black"
+          type="number"
+          name="amount"
+          id="l-amount"
+          required
+        />
+        <label for="l-description">Description</label>
+        <input
+          class="bg-gray-200 dark:bg-gray-300 dark:text-gray-900 border border-black"
+          type="text"
+          name="description"
+          id="l-description"
+          required
+        />
+        <label for="l-note">Note</label>
+        <input
+          class="bg-gray-200 dark:bg-gray-300 dark:text-gray-900 border border-black"
+          type="text"
+          name="note"
+          id="l-note"
+        />
+        <label for="l-category">Choose category</label>
+        <select
+          class="border border-gray-800 dark:text-gray-900"
+          name="category"
+          id="l-category"
+          required
+        >
+          <option value="" disabled selected>--Select Category--</option>
+          <option value="food">Food</option>
+          <option value="fuel">Fuel</option>
+          <option value="movie">Movie</option>
+          <option value="electricity">Electricity</option>
+        </select>
+        <button
+          type="submit"
+          class="bg-green-200 font-medium px-2 rounded-md border border-gray-700 hover:bg-green-400 dark:bg-green-400 dark:hover:bg-green-300 cursor-pointer dark:text-slate-800"
+        >
+          Add expense
+        </button>
+      </form>
+
+      <!-- leaderboard section  -->
+      <section>
+        <ul
+          id="ul-leaderboard"
+          class="flex flex-col gap-3 items-center bg-gray-200 dark:bg-slate-800 text-gray-900 dark:text-gray-300 text-lg"
+        ></ul>
+      </section>
+
+      <!-- Expense History Display section  -->
+      <section class="relative">
+        <h2
+          class="text-2xl font-mono text-center p-6 bg-blue-200 dark:bg-slate-700 dark:text-gray-300"
+        >
+          Expense History 📈
+        </h2>
+        <button
+          onclick="downloadReport()"
+          class="absolute top-5 right-8 bg-slate-900/90 p-1 rounded-sm text-white cursor-pointer active:scale-90 transition-all duration-200"
+        >
+          Download Report
+        </button>
+        <ul
+          id="ul-container"
+          class="flex flex-col gap-4 items-center p-2 bg-gray-200 min-h-96 dark:bg-slate-800 text-gray-800 dark:text-gray-300 pl-8 text-lg"
+        ></ul>
+        <!-- Pagination -->
+        <div id="pagination" class="flex justify-center gap-2 items-center">
+          <button
+            id="prevBtn"
+            class="bg-gray-100 dark:bg-slate-700 hover:brightness-110 dark:text-gray-200 border border-gray-500 px-1 rounded-sm cursor-pointer m-2"
+          >
+            Prev
+          </button>
+          <span id="pageInfo">1</span>
+          <button
+            id="nextBtn"
+            class="bg-gray-100 dark:bg-slate-700 hover:brightness-110 dark:text-gray-200 border border-gray-500 px-1 rounded-sm cursor-pointer m-2"
+          >
+            Next
+          </button>
+          <button
+            id="lastBtn"
+            class="bg-gray-100 dark:bg-slate-700 hover:brightness-110 dark:text-gray-200 border border-gray-500 px-1 rounded-sm cursor-pointer m-2"
+          >
+            Last
+          </button>
+          <label for="rowsPerPage">No. of</label>
+          <select id="rowsPerPage" class="border border-gray-600 bg-slate-100">
+            <option disabled selected>rows</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select>
+        </div>
+      </section>
+    </div>
+
+    <!-- Monthly Report - Yearly Report -->
+    <div>
+      <div class="overflow-hidden border rounded-lg hidden" id="monthly-div">
+        <button
+          class="absolute left-2 translate-y-1 bg-blue-200 border border-gray-800 px-1 rounded-sm cursor-pointer"
+        >
+          Download Report
+        </button>
+        <h2 class="text-center py-2">Monthly Report</h2>
+        <table class="w-full text-sm border-collapse">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="border px-3 py-2 text-left">Date</th>
+              <th class="border px-3 py-2 text-left">Description</th>
+              <th class="border px-3 py-2 text-left">Category</th>
+              <th class="border px-3 py-2 text-right">Amount (₹)</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="border px-3 py-2">2026-02-01</td>
+              <td class="border px-3 py-2">Groceries</td>
+              <td class="border px-3 py-2">Food</td>
+              <td class="border px-3 py-2 text-right">450</td>
+            </tr>
+            <tr>
+              <td class="border px-3 py-2">2026-02-01</td>
+              <td class="border px-3 py-2">Groceries</td>
+              <td class="border px-3 py-2">Food</td>
+              <td class="border px-3 py-2 text-right">450</td>
+            </tr>
+            <tr>
+              <td class="border px-3 py-2">2026-02-01</td>
+              <td class="border px-3 py-2">Groceries</td>
+              <td class="border px-3 py-2">Food</td>
+              <td class="border px-3 py-2 text-right">450</td>
+            </tr>
+            <tr>
+              <td class="border px-3 py-2">2026-02-01</td>
+              <td class="border px-3 py-2">Groceries</td>
+              <td class="border px-3 py-2">Food</td>
+              <td class="border px-3 py-2 text-right">450</td>
+            </tr>
+            <tr>
+              <td class="border px-3 py-2">2026-02-01</td>
+              <td class="border px-3 py-2">Groceries</td>
+              <td class="border px-3 py-2">Food</td>
+              <td class="border px-3 py-2 text-right">450</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="overflow-hidden border rounded-lg hidden" id="yearly-div">
+        <button
+          class="absolute left-2 translate-y-1 bg-blue-200 border border-gray-800 px-1 rounded-sm cursor-pointer"
+        >
+          Download Report
+        </button>
+        <h2 class="text-center py-2">Yearly Report</h2>
+        <table class="w-full text-sm border-collapse">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="border px-3 py-2 text-left">Month</th>
+              <th class="border px-3 py-2 text-right">Total Amount (₹)</th>
+              <th class="border px-3 py-2 text-right">Entries</th>
+              <th class="border px-3 py-2 text-left">Top Category</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="border px-3 py-2">January</td>
+              <td class="border px-3 py-2 text-right">12,450</td>
+              <td class="border px-3 py-2 text-right">34</td>
+              <td class="border px-3 py-2">Food</td>
+            </tr>
+            <tr>
+              <td class="border px-3 py-2">January</td>
+              <td class="border px-3 py-2 text-right">12,450</td>
+              <td class="border px-3 py-2 text-right">34</td>
+              <td class="border px-3 py-2">Food</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="expense.js"></script>
+  </body>
+</html>
